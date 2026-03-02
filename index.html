@@ -1792,8 +1792,7 @@
             <span class="code-feedback" id="codeFeedback"></span>
           </label>
           <div class="captcha-wrapper">
-            <!-- Replace data-sitekey with your production hCaptcha site key before deploying -->
-            <div class="h-captcha" data-sitekey="10000000-ffff-ffff-ffff-000000000001"></div>
+            <div class="h-captcha" data-sitekey="6304b98e-e316-4c90-a7c4-198c10b4d878"></div>
             <span class="captcha-error" id="captchaError"></span>
           </div>
           <div class="support-actions">
@@ -2035,7 +2034,8 @@
             pricePhone: "📞 Estimated cost: from 2.50 € (phone support)",
             priceStorage: "💾 Estimated cost: from 40 € (storage repair)",
             priceOther: "🔧 Estimated cost: 2 € – 100 € (general repair)",
-            captchaRequired: "Please complete the captcha before submitting."
+            captchaRequired: "Please complete the captcha before submitting.",
+            captchaFailed: "Captcha verification failed. Please try again."
           },
           footer: {
             comingSoon: "Coming Soon",
@@ -2140,7 +2140,8 @@
             pricePhone: "📞 Geschätzte Kosten: ab 2,50 € (Telefon-Support)",
             priceStorage: "💾 Geschätzte Kosten: ab 40 € (Speicher-Reparatur)",
             priceOther: "🔧 Geschätzte Kosten: 2 € – 100 € (allgemeine Reparatur)",
-            captchaRequired: "Bitte das Captcha vor dem Absenden ausfüllen."
+            captchaRequired: "Bitte das Captcha vor dem Absenden ausfüllen.",
+            captchaFailed: "Captcha-Überprüfung fehlgeschlagen. Bitte erneut versuchen."
           },
           footer: {
             comingSoon: "Demnächst verfügbar",
@@ -2758,17 +2759,39 @@
         window.location.href = downloadBtn.href;
       });
 
-      supportForm.addEventListener("submit", (event) => {
+      supportForm.addEventListener("submit", async (event) => {
         event.preventDefault();
 
         const captchaResponse = typeof hcaptcha !== "undefined" ? hcaptcha.getResponse() : "";
         const captchaError = document.getElementById("captchaError");
+        const tData = translations[currentLang];
         if (!captchaResponse) {
-          const tData = translations[currentLang];
           captchaError.textContent = tData.support.captchaRequired;
           return;
         }
         captchaError.textContent = "";
+
+        // Verify captcha token server-side before proceeding
+        try {
+          const verifyRes = await fetch(
+            "https://miivgganhzzqfzebmaxx.supabase.co/functions/v1/verify-captcha",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ token: captchaResponse }),
+            }
+          );
+          const verifyData = await verifyRes.json();
+          if (!verifyData.success) {
+            captchaError.textContent = tData.support.captchaFailed;
+            if (typeof hcaptcha !== "undefined") hcaptcha.reset();
+            return;
+          }
+        } catch {
+          captchaError.textContent = tData.support.captchaFailed;
+          if (typeof hcaptcha !== "undefined") hcaptcha.reset();
+          return;
+        }
 
         const formData = new FormData(supportForm);
 
@@ -2777,7 +2800,6 @@
         const model      = String(formData.get("model")      || "");
         const issue      = String(formData.get("issue")      || "");
 
-        const tData = translations[currentLang];
         const subject = encodeURIComponent(`Tech Support: ${deviceType} - ${brand} ${model}`.trim());
         const bodyLines = [
           `${tData.support.deviceType}: ${deviceType}`,
