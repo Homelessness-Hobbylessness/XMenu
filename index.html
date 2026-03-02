@@ -176,6 +176,95 @@
         align-items: center;
       }
 
+      /* Changelog / What's New section */
+      .changelog {
+        display: grid;
+        gap: 14px;
+      }
+
+      .changelog-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 4px;
+      }
+
+      .changelog-header h2 {
+        margin: 0;
+        font-size: 1.25rem;
+        color: #f1f5f9;
+        font-weight: 600;
+      }
+
+      .changelog-badge {
+        background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+        color: #0f172a;
+        border-radius: 999px;
+        padding: 4px 12px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+      }
+
+      .changelog-entry {
+        background: rgba(30, 41, 59, 0.7);
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        border-radius: 16px;
+        padding: 18px 22px;
+        display: grid;
+        gap: 8px;
+        transition: all 0.3s ease;
+      }
+
+      .changelog-entry:hover {
+        border-color: rgba(56, 189, 248, 0.35);
+        box-shadow: 0 8px 24px rgba(56, 189, 248, 0.1);
+      }
+
+      .changelog-entry-top {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .changelog-version {
+        font-family: monospace;
+        font-size: 0.88rem;
+        font-weight: 700;
+        color: #7dd3fc;
+        letter-spacing: 0.04em;
+      }
+
+      .changelog-date {
+        font-size: 0.8rem;
+        color: #64748b;
+      }
+
+      .changelog-tag {
+        border-radius: 999px;
+        padding: 3px 10px;
+        font-size: 0.72rem;
+        font-weight: 700;
+      }
+
+      .changelog-tag.new     { background: rgba(74, 222, 128, 0.15); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.3); }
+      .changelog-tag.fix     { background: rgba(251, 191, 36, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); }
+      .changelog-tag.improve { background: rgba(56, 189, 248, 0.15); color: #7dd3fc; border: 1px solid rgba(56, 189, 248, 0.3); }
+
+      .changelog-entry ul {
+        margin: 0;
+        padding-left: 20px;
+        display: grid;
+        gap: 4px;
+      }
+
+      .changelog-entry li {
+        font-size: 0.9rem;
+        color: #cbd5e1;
+        line-height: 1.5;
+      }
+
       /* Reviews section */
       .reviews {
         display: grid;
@@ -729,6 +818,51 @@
         border-color: rgba(255, 255, 255, 0.1);
         box-shadow: none;
       }
+      body.theme-light {
+        background: radial-gradient(circle at top, #e2eaf4, #f0f4fa 65%);
+        color: #1e293b;
+      }
+      body.theme-light main {
+        background: rgba(255, 255, 255, 0.9);
+        border-color: rgba(100, 116, 139, 0.25);
+        box-shadow: 0 30px 80px rgba(100, 116, 139, 0.18);
+      }
+      body.theme-light h1 { color: #0f172a; }
+      body.theme-light p { color: #334155; }
+      body.theme-light .eyebrow { color: #64748b; }
+      body.theme-light .detail-card {
+        background: rgba(241, 245, 249, 0.85);
+        border-color: rgba(100, 116, 139, 0.2);
+      }
+      body.theme-light .detail-card h2 { color: #0f172a; }
+      body.theme-light .detail-card p  { color: #475569; }
+      body.theme-light .review-card {
+        background: rgba(241, 245, 249, 0.85);
+        border-color: rgba(100, 116, 139, 0.2);
+      }
+      body.theme-light .review-text { color: #334155; }
+      body.theme-light footer { color: #64748b; border-top-color: rgba(100, 116, 139, 0.2); }
+      body.theme-light .button.secondary {
+        color: #1e293b;
+        border-color: rgba(100, 116, 139, 0.4);
+      }
+      body.theme-light .button.secondary:hover {
+        background: rgba(100, 116, 139, 0.1);
+        border-color: rgba(100, 116, 139, 0.6);
+      }
+      body.theme-light .language-switcher {
+        background: rgba(255, 255, 255, 0.95);
+        border-color: rgba(100, 116, 139, 0.25);
+      }
+      body.theme-light .changelog-entry {
+        background: rgba(241, 245, 249, 0.85);
+        border-color: rgba(100, 116, 139, 0.2);
+      }
+      body.theme-light .changelog-header h2 { color: #0f172a; }
+      body.theme-light .changelog-entry li  { color: #475569; }
+      body.theme-light .changelog-date      { color: #94a3b8; }
+      body.theme-light .lang-btn { color: #64748b; }
+      body.theme-light .lang-btn:hover { color: #1e293b; }
 
       .price-estimate {
         background: rgba(56, 189, 248, 0.08);
@@ -1353,6 +1487,53 @@
         </div>
       </section>
 
+      <!-- ── What's New / Changelog ── -->
+      <section class="changelog" aria-label="What's New">
+        <div class="changelog-header">
+          <h2 data-i18n="changelog.title">What's New</h2>
+          <span class="changelog-badge" data-i18n="changelog.latest">Latest</span>
+        </div>
+
+        <div class="changelog-entry">
+          <div class="changelog-entry-top">
+            <span class="changelog-version">v1.2.9</span>
+            <span class="changelog-date" data-i18n="changelog.v129.date">February 2026</span>
+            <span class="changelog-tag new" data-i18n="changelog.tagNew">NEW</span>
+          </div>
+          <ul>
+            <li data-i18n="changelog.v129.item1">Membership system with XP tiers (Bronze → Platinum)</li>
+            <li data-i18n="changelog.v129.item2">Rewarded ads — watch a short clip to earn XP</li>
+            <li data-i18n="changelog.v129.item3">Secret code modal accessible from the footer</li>
+          </ul>
+        </div>
+
+        <div class="changelog-entry">
+          <div class="changelog-entry-top">
+            <span class="changelog-version">v1.2.8</span>
+            <span class="changelog-date" data-i18n="changelog.v128.date">January 2026</span>
+            <span class="changelog-tag improve" data-i18n="changelog.tagImprove">IMPROVE</span>
+          </div>
+          <ul>
+            <li data-i18n="changelog.v128.item1">YouTube Ad-Free player with volume control and fullscreen mode</li>
+            <li data-i18n="changelog.v128.item2">Theme customization panel (Ocean, Forest, Sunset, Minimal, Light)</li>
+            <li data-i18n="changelog.v128.item3">Tech Support form with price estimates and discount codes</li>
+          </ul>
+        </div>
+
+        <div class="changelog-entry">
+          <div class="changelog-entry-top">
+            <span class="changelog-version">v1.2.7</span>
+            <span class="changelog-date" data-i18n="changelog.v127.date">December 2025</span>
+            <span class="changelog-tag fix" data-i18n="changelog.tagFix">FIX</span>
+          </div>
+          <ul>
+            <li data-i18n="changelog.v127.item1">EN/DE language switcher with persistent preference</li>
+            <li data-i18n="changelog.v127.item2">Supabase authentication and account management</li>
+            <li data-i18n="changelog.v127.item3">Asset loading animation with skip option</li>
+          </ul>
+        </div>
+      </section>
+
       <section class="support-panel" id="supportPanel">
         <div>
           <h2 data-i18n="support.title">Tech Support Request</h2>
@@ -1492,12 +1673,26 @@
             <strong>Hamza</strong> &mdash; MacBook Air SSD Reparatur &mdash; 5/5
           </div>
         </div>
+        <div class="review-card">
+          <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="review-text">"XMenu hat meinen iPad-Workflow komplett verändert. Alles mit einem Tap erreichbar!"</p>
+          <div class="review-meta">
+            <strong>Lena</strong> &mdash; iPad Pro Shortcuts &mdash; 5/5
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="review-text">"Incredibly useful shortcut hub – saves me minutes every single day. Highly recommended!"</p>
+          <div class="review-meta">
+            <strong>James</strong> &mdash; iPhone 15 Pro &mdash; 5/5
+          </div>
+        </div>
       </section>
 
       <footer>
         <div class="footer-note">
           <span class="pill" data-i18n="footer.comingSoon">Coming Soon</span>
-          <span data-i18n="footer.patch">Patch 1.2.7</span>
+          <span data-i18n="footer.patch">Patch 1.2.9</span>
         </div>
         <span data-i18n="footer.contact">Contact: support@xmenu.dev</span>
         <a class="impressum-link" href="impressum.html">Impressum</a>
@@ -1548,6 +1743,7 @@
         <button class="theme-btn" data-theme="forest">Forest</button>
         <button class="theme-btn" data-theme="sunset">Sunset</button>
         <button class="theme-btn" data-theme="minimal">Minimal</button>
+        <button class="theme-btn" data-theme="light">Light</button>
       </div>
     </div>
 
@@ -1615,8 +1811,33 @@
           },
           footer: {
             comingSoon: "Coming Soon",
-            patch: "Patch 1.2.7",
+            patch: "Patch 1.2.9",
             contact: "Contact: support@xmenu.dev"
+          },
+          changelog: {
+            title: "What's New",
+            latest: "Latest",
+            tagNew: "NEW",
+            tagImprove: "IMPROVE",
+            tagFix: "FIX",
+            v129: {
+              date: "February 2026",
+              item1: "Membership system with XP tiers (Bronze → Platinum)",
+              item2: "Rewarded ads — watch a short clip to earn XP",
+              item3: "Secret code modal accessible from the footer"
+            },
+            v128: {
+              date: "January 2026",
+              item1: "YouTube Ad-Free player with volume control and fullscreen mode",
+              item2: "Theme customization panel (Ocean, Forest, Sunset, Minimal, Light)",
+              item3: "Tech Support form with price estimates and discount codes"
+            },
+            v127: {
+              date: "December 2025",
+              item1: "EN/DE language switcher with persistent preference",
+              item2: "Supabase authentication and account management",
+              item3: "Asset loading animation with skip option"
+            }
           },
           assets: [
             "Styles",
@@ -1693,6 +1914,31 @@
             comingSoon: "Demnächst verfügbar",
             patch: "Patch 1.2.9",
             contact: "Kontakt: support@xmenu.dev"
+          },
+          changelog: {
+            title: "Neuigkeiten",
+            latest: "Aktuell",
+            tagNew: "NEU",
+            tagImprove: "VERBESSERT",
+            tagFix: "BEHOBEN",
+            v129: {
+              date: "Februar 2026",
+              item1: "Mitgliedschaftssystem mit XP-Stufen (Bronze → Platin)",
+              item2: "Belohnungswerbung — kurze Videos für XP ansehen",
+              item3: "Geheimcode-Modal über die Fußzeile erreichbar"
+            },
+            v128: {
+              date: "Januar 2026",
+              item1: "YouTube-Werbefrei-Player mit Lautstärkeregelung und Vollbildmodus",
+              item2: "Design-Anpassungsbereich (Ocean, Forest, Sunset, Minimal, Light)",
+              item3: "Tech-Support-Formular mit Preisschätzungen und Rabattcodes"
+            },
+            v127: {
+              date: "Dezember 2025",
+              item1: "EN/DE-Sprachumschalter mit gespeicherter Einstellung",
+              item2: "Supabase-Authentifizierung und Kontoverwaltung",
+              item3: "Asset-Ladeanimation mit Überspringen-Option"
+            }
           },
           assets: [
             "Styles",
@@ -2243,7 +2489,7 @@
         customizePanel.classList.remove("visible");
       });
 
-      const ALL_THEMES = ["ocean", "forest", "sunset", "minimal"];
+      const ALL_THEMES = ["ocean", "forest", "sunset", "minimal", "light"];
 
       function applyTheme(theme) {
         ALL_THEMES.forEach(t => document.body.classList.remove("theme-" + t));
