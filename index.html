@@ -1559,6 +1559,30 @@
         min-height: 18px;
         display: block;
       }
+
+      .hcaptcha-overlay-badge {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.72rem;
+        color: #94a3b8;
+        margin-top: 4px;
+      }
+
+      .hcaptcha-overlay-badge img {
+        height: 20px;
+        width: auto;
+        flex-shrink: 0;
+      }
+
+      .hcaptcha-overlay-badge a {
+        color: #94a3b8;
+        text-decoration: underline;
+      }
+
+      .hcaptcha-overlay-badge a:hover {
+        color: #cbd5e1;
+      }
     </style>
     <script src="codes.js"></script>
     <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
@@ -1793,7 +1817,25 @@
             <span class="code-feedback" id="codeFeedback"></span>
           </label>
           <div class="captcha-wrapper">
-            <div class="h-captcha" data-sitekey="6304b98e-e316-4c90-a7c4-198c10b4d878"></div>
+            <div
+              id="hcaptcha"
+              class="h-captcha"
+              data-sitekey="6304b98e-e316-4c90-a7c4-198c10b4d878"
+              data-size="invisible"
+              data-callback="onHCaptchaDone"
+            ></div>
+            <div
+              id="hcaptcha-badge"
+              class="hcaptcha-overlay-badge"
+              aria-label="hCaptcha disclosure"
+            >
+              <img src="https://www.hcaptcha.com/assets/img/hcaptcha-logo-landscape.svg" alt="hCaptcha" />
+              <div>
+                This site is protected by hCaptcha and its
+                <a href="https://www.hcaptcha.com/privacy">Privacy Policy</a> and
+                <a href="https://www.hcaptcha.com/terms">Terms of Service</a> apply.
+              </div>
+            </div>
             <span class="captcha-error" id="captchaError"></span>
           </div>
           <div class="support-actions">
@@ -2865,16 +2907,9 @@
         window.location.href = downloadBtn.href;
       });
 
-      supportForm.addEventListener("submit", async (event) => {
-        event.preventDefault();
-
-        const captchaResponse = typeof hcaptcha !== "undefined" ? hcaptcha.getResponse() : "";
+      async function doSupportSubmit(token) {
         const captchaError = document.getElementById("captchaError");
         const tData = translations[currentLang];
-        if (!captchaResponse) {
-          captchaError.textContent = tData.support.captchaRequired;
-          return;
-        }
         captchaError.textContent = "";
 
         // Verify captcha token server-side before proceeding
@@ -2884,7 +2919,7 @@
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ token: captchaResponse }),
+              body: JSON.stringify({ token }),
             }
           );
           const verifyData = await verifyRes.json();
@@ -2920,6 +2955,23 @@
         }
         const body = encodeURIComponent(bodyLines.join("\n"));
         window.location.href = `mailto:support@xmenu.dev?subject=${subject}&body=${body}`;
+      }
+
+      window.onHCaptchaDone = function (token) {
+        doSupportSubmit(token);
+      };
+
+      supportForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const captchaResponse = typeof hcaptcha !== "undefined" ? hcaptcha.getResponse() : "";
+        if (captchaResponse) {
+          doSupportSubmit(captchaResponse);
+        } else if (typeof hcaptcha !== "undefined") {
+          hcaptcha.execute();
+        } else {
+          const captchaError = document.getElementById("captchaError");
+          captchaError.textContent = translations[currentLang].support.captchaFailed;
+        }
       });
 
       start();
