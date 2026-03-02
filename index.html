@@ -10,13 +10,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+SC:wght@400;600;700&display=swap"
       rel="stylesheet"
     />
     <style>
       :root {
         color-scheme: dark;
-        font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        font-family: "Inter", "Noto Sans SC", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
           sans-serif;
         background-color: #0f172a;
         color: #e2e8f0;
@@ -1569,6 +1569,7 @@
         EN
       </button>
       <button class="lang-btn" data-lang="de" aria-label="Switch to German">DE</button>
+      <button class="lang-btn" data-lang="zh" aria-label="Switch to Chinese">ZH</button>
     </div>
 
     <div class="asset-loader" id="assetLoader" aria-live="polite">
@@ -2185,6 +2186,111 @@
             "Konfiguration",
             "Komponenten",
             "Footer"
+          ]
+        },
+        zh: {
+          loader: {
+            title: "正在加载资源",
+            initializing: "初始化中…",
+            loading: "正在加载：{asset}…",
+            done: "完成。",
+            skip: "跳过"
+          },
+          header: {
+            eyebrow: "XMenu 主页",
+            title: "您的下一个 iPad 体验从 XMenu 开始。",
+            description:
+              "探索一个完美结合设计与功能的现代平台。XMenu 将您的 iPad 体验提升到全新水平。",
+            download: "下载",
+            contact: "联系我们",
+            support: "技术支持",
+            supportClose: "关闭"
+          },
+          features: {
+            design: {
+              title: "即用设计",
+              description:
+                "现代化布局，给人留下强烈的第一印象，操作直观。"
+            },
+            onboarding: {
+              title: "快速上手",
+              description:
+                "简单设置，立即可用——无需复杂配置。"
+            },
+            development: {
+              title: "持续开发",
+              description:
+                "定期更新和新功能，带来最佳用户体验。"
+            }
+          },
+          support: {
+            title: "技术支持请求",
+            description:
+              "选择您的设备类型、品牌和型号，并描述您的问题。请求将通过电子邮件发送至我们的支持团队。",
+            deviceType: "设备类型",
+            pleaseSelect: "请选择",
+            brand: "品牌",
+            brandPlaceholder: "例如：Apple、Samsung、Dell",
+            model: "型号",
+            modelPlaceholder: "例如：iPhone 14、XPS 13",
+            issue: "描述您的问题",
+            issuePlaceholder: "简要描述问题…",
+            submit: "提交支持请求",
+            helper: "您的邮件客户端将打开以发送请求。",
+            discountCode: "折扣码（可选）",
+            discountCodePlaceholder: "输入代码（例如：2026Xrepairpro）",
+            applyCode: "应用",
+            codeApplied: "✓ 代码已应用：{discount}% 折扣",
+            codeInvalid: "✗ 无效代码",
+            codeUnlocked: "✓ 自定义面板已解锁！",
+            pricePhone: "📞 预计费用：从 2.50 € 起（电话支持）",
+            priceStorage: "💾 预计费用：从 40 € 起（存储维修）",
+            priceOther: "🔧 预计费用：2 € – 100 €（一般维修）",
+            captchaRequired: "请在提交前完成验证码。",
+            captchaFailed: "验证码验证失败，请重试。"
+          },
+          footer: {
+            comingSoon: "即将推出",
+            patch: "补丁 1.2.9",
+            contact: "联系方式：support@xmenu.dev"
+          },
+          changelog: {
+            title: "最新动态",
+            latest: "最新",
+            tagNew: "新功能",
+            tagImprove: "改进",
+            tagFix: "修复",
+            v129: {
+              date: "2026年2月",
+              item1: "会员系统与 XP 等级（铜牌 → 铂金）",
+              item2: "激励广告——观看短片赚取 XP",
+              item3: "可从页脚访问的密码模态框"
+            },
+            v128: {
+              date: "2026年1月",
+              item1: "YouTube 无广告播放器，支持音量控制和全屏模式",
+              item2: "主题定制面板（海洋、森林、日落、简约、明亮）",
+              item3: "含价格估算和折扣码的技术支持表单"
+            },
+            v127: {
+              date: "2025年12月",
+              item1: "支持持久偏好的 EN/DE 语言切换器",
+              item2: "Supabase 身份验证与账户管理",
+              item3: "带跳过选项的资源加载动画"
+            }
+          },
+          reviews: {
+            title: "用户评价"
+          },
+          assets: [
+            "样式",
+            "字体",
+            "布局",
+            "图标",
+            "图片",
+            "配置",
+            "组件",
+            "页脚"
           ]
         }
       };

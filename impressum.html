@@ -7,13 +7,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+SC:wght@400;600;700&display=swap"
       rel="stylesheet"
     />
     <style>
       :root {
         color-scheme: dark;
-        font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-family: "Inter", "Noto Sans SC", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         background-color: #0f172a;
         color: #e2e8f0;
       }
@@ -78,6 +78,39 @@
         border-top: 1px solid rgba(148, 163, 184, 0.15);
         padding-top: 24px;
       }
+      .language-switcher {
+        position: fixed;
+        top: 24px;
+        right: 24px;
+        z-index: 10000;
+        display: flex;
+        gap: 8px;
+        background: rgba(15, 23, 42, 0.95);
+        border: 1px solid rgba(148, 163, 184, 0.25);
+        border-radius: 999px;
+        padding: 6px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.4);
+      }
+      .lang-btn {
+        appearance: none;
+        border: none;
+        background: transparent;
+        color: #94a3b8;
+        padding: 8px 16px;
+        border-radius: 999px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-family: inherit;
+      }
+      .lang-btn:hover { color: #e2e8f0; background: rgba(148, 163, 184, 0.1); }
+      .lang-btn.active {
+        background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+        color: #0f172a;
+        box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
+      }
       @media (max-width: 640px) {
         body { padding: 24px 16px; }
         main { padding: 40px 24px; gap: 24px; }
@@ -86,36 +119,41 @@
     </style>
   </head>
   <body>
+    <div class="language-switcher">
+      <button class="lang-btn" data-lang="en" aria-label="Switch to English">EN</button>
+      <button class="lang-btn active" data-lang="de" aria-label="Switch to German">DE</button>
+      <button class="lang-btn" data-lang="zh" aria-label="Switch to Chinese">ZH</button>
+    </div>
     <main>
       <div class="nav-links">
-        <a class="back-link" href="index.html">&#8592; Zurück zur Startseite</a>
-        <a class="back-link" href="datenschutz.html">Datenschutz</a>
+        <a class="back-link" href="index.html" data-i18n="backLink">&#8592; Zurück zur Startseite</a>
+        <a class="back-link" href="datenschutz.html" data-i18n="privacyLink">Datenschutz</a>
       </div>
 
-      <h1>Impressum</h1>
+      <h1 data-i18n="title">Impressum</h1>
 
       <!-- =====================================================================
            IMPRESSUM CONTENT – edit the fields below freely
            ===================================================================== -->
 
       <div class="section">
-        <h2>Angaben gemäß § 5 TMG</h2>
+        <h2 data-i18n="section1Title">Angaben gemäß § 5 TMG</h2>
         <address>
           XMenu<br />
           28259 Huchting/Schwachhausen<br />
-          Deutschland
+          <span data-i18n="country">Deutschland</span>
         </address>
       </div>
 
       <div class="section">
-        <h2>Kontakt</h2>
+        <h2 data-i18n="section2Title">Kontakt</h2>
         <p>
           E-Mail: <a href="mailto:support@xmenu.dev">support@xmenu.dev</a>
         </p>
       </div>
 
       <div class="section">
-        <h2>Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV</h2>
+        <h2 data-i18n="section3Title">Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV</h2>
         <address>
           XMenu<br />
           28259 Huchting
@@ -123,8 +161,8 @@
       </div>
 
       <div class="section">
-        <h2>Haftungsausschluss</h2>
-        <p>
+        <h2 data-i18n="section4Title">Haftungsausschluss</h2>
+        <p data-i18n="section4Body">
           Die Inhalte dieser Website wurden mit größtmöglicher Sorgfalt erstellt.
           Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir
           jedoch keine Gewähr übernehmen. Als Diensteanbieter sind wir gemäß § 7 Abs. 1
@@ -135,5 +173,61 @@
 
       <!-- ===================================================================== -->
     </main>
+    <script>
+      const translations = {
+        de: {
+          backLink: "\u2190 Zurück zur Startseite",
+          privacyLink: "Datenschutz",
+          title: "Impressum",
+          section1Title: "Angaben gemäß § 5 TMG",
+          country: "Deutschland",
+          section2Title: "Kontakt",
+          section3Title: "Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV",
+          section4Title: "Haftungsausschluss",
+          section4Body: "Die Inhalte dieser Website wurden mit größtmöglicher Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen. Als Diensteanbieter sind wir gemäß § 7 Abs. 1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich."
+        },
+        en: {
+          backLink: "\u2190 Back to Home",
+          privacyLink: "Privacy Policy",
+          title: "Legal Notice",
+          section1Title: "Company Information",
+          country: "Germany",
+          section2Title: "Contact",
+          section3Title: "Editorial Responsibility",
+          section4Title: "Disclaimer",
+          section4Body: "The contents of this website have been compiled with the utmost care. However, we cannot guarantee the accuracy, completeness or timeliness of the content. As a service provider, we are responsible for our own content on these pages in accordance with general laws."
+        },
+        zh: {
+          backLink: "\u2190 返回主页",
+          privacyLink: "隐私政策",
+          title: "法律声明",
+          section1Title: "公司信息",
+          country: "德国",
+          section2Title: "联系方式",
+          section3Title: "内容责任",
+          section4Title: "免责声明",
+          section4Body: "本网站内容经过精心编写，但我们无法保证内容的准确性、完整性和时效性。作为服务提供商，我们依据法律对本网站自有内容负责。"
+        }
+      };
+
+      function setLanguage(lang) {
+        const t = translations[lang] || translations.de;
+        document.querySelectorAll("[data-i18n]").forEach(el => {
+          const key = el.getAttribute("data-i18n");
+          if (t[key] !== undefined) el.textContent = t[key];
+        });
+        document.documentElement.lang = lang;
+        document.querySelectorAll(".lang-btn").forEach(btn => {
+          btn.classList.toggle("active", btn.getAttribute("data-lang") === lang);
+        });
+        localStorage.setItem("xmenu-lang", lang);
+      }
+
+      document.querySelectorAll(".lang-btn").forEach(btn => {
+        btn.addEventListener("click", () => setLanguage(btn.getAttribute("data-lang")));
+      });
+
+      setLanguage(localStorage.getItem("xmenu-lang") || "de");
+    </script>
   </body>
 </html>
