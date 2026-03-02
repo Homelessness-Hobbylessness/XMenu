@@ -312,6 +312,177 @@
         font-weight: 600;
       }
 
+      /* Reviews section header row */
+      .reviews-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 4px;
+      }
+
+      .reviews-header h2 {
+        margin: 0;
+        font-size: 1.25rem;
+        color: #f1f5f9;
+        font-weight: 600;
+      }
+
+      /* Write-a-review toggle button — hidden until JS shows it */
+      #writeReviewBtn {
+        display: none;
+        padding: 10px 20px;
+        font-size: 0.88rem;
+      }
+
+      /* Optional label suffix in forms */
+      .form-label-optional {
+        color: #64748b;
+        font-weight: 400;
+      }
+
+      /* Write-a-Review panel (collapsed by default, same pattern as support-panel) */
+      .review-form-panel {
+        background: rgba(30, 41, 59, 0.75);
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        border-radius: 20px;
+        display: grid;
+        gap: 20px;
+        overflow: hidden;
+        max-height: 0;
+        opacity: 0;
+        transform: translateY(-16px);
+        pointer-events: none;
+        padding: 0 clamp(20px, 4vw, 36px);
+        transition: max-height 0.45s ease, opacity 0.35s ease, transform 0.35s ease, padding 0.35s ease;
+      }
+
+      .review-form-panel.review-form-panel--open {
+        max-height: 800px;
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+        padding: 32px clamp(20px, 4vw, 36px);
+      }
+
+      .review-form-panel h2 {
+        margin: 0;
+        color: #f8fafc;
+        font-size: 1.3rem;
+        font-weight: 600;
+      }
+
+      .review-form-panel p {
+        color: #cbd5e1;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin: 0;
+      }
+
+      /* Star picker */
+      .star-picker {
+        display: flex;
+        gap: 6px;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+      }
+
+      .star-picker input[type="radio"] {
+        display: none;
+      }
+
+      .star-picker label {
+        font-size: 1.6rem;
+        color: #64748b;
+        cursor: pointer;
+        transition: color 0.15s ease, transform 0.15s ease;
+        line-height: 1;
+        user-select: none;
+      }
+
+      /* Highlight on hover — because of row-reverse, hover this label + all after it */
+      .star-picker label:hover,
+      .star-picker label:hover ~ label {
+        color: #facc15;
+        transform: scale(1.15);
+      }
+
+      /* Highlight checked and all "after" (visually to the left, due to row-reverse) */
+      .star-picker input[type="radio"]:checked ~ label {
+        color: #facc15;
+      }
+
+      /* Review form inputs */
+      .review-form {
+        display: grid;
+        gap: 16px;
+      }
+
+      .review-form label {
+        font-size: 0.9rem;
+        color: #cbd5e1;
+        display: grid;
+        gap: 8px;
+        font-weight: 500;
+      }
+
+      .review-form input,
+      .review-form textarea {
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 12px;
+        border: 1px solid rgba(148, 163, 184, 0.3);
+        background: rgba(15, 23, 42, 0.8);
+        color: #e2e8f0;
+        font-size: 0.95rem;
+        font-family: inherit;
+        transition: all 0.2s ease;
+      }
+
+      .review-form input:focus,
+      .review-form textarea:focus {
+        outline: none;
+        border-color: #38bdf8;
+        box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
+      }
+
+      .review-form textarea {
+        min-height: 100px;
+        resize: vertical;
+      }
+
+      .review-form-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+      }
+
+      .review-form-feedback {
+        font-size: 0.85rem;
+        min-height: 18px;
+      }
+
+      .review-form-feedback.success { color: #4ade80; }
+      .review-form-feedback.error   { color: #f87171; }
+
+      /* Light-theme overrides for review form */
+      body.theme-light .review-form-panel {
+        background: rgba(241, 245, 249, 0.85);
+        border-color: rgba(100, 116, 139, 0.2);
+      }
+
+      body.theme-light .review-form-panel h2 { color: #0f172a; }
+      body.theme-light .review-form-panel p  { color: #475569; }
+      body.theme-light .review-form label    { color: #334155; }
+      body.theme-light .review-form input,
+      body.theme-light .review-form textarea {
+        background: rgba(255, 255, 255, 0.9);
+        color: #0f172a;
+        border-color: rgba(100, 116, 139, 0.3);
+      }
+
       /* Impressum link in footer */
       .impressum-link {
         color: #64748b;
@@ -1665,7 +1836,44 @@
         </div>
       </section>
 
-      <section class="reviews" aria-label="Kundenbewertungen">
+      <!-- ── Write a Review panel (shown only to logged-in users) ── -->
+      <section class="review-form-panel" id="reviewFormPanel" aria-label="Write a Review">
+        <div>
+          <h2>✍️ Write a Review</h2>
+          <p>Share your experience with XMenu. Your review will be visible to everyone.</p>
+        </div>
+        <form class="review-form" id="reviewForm" novalidate>
+          <label>
+            Rating
+            <div class="star-picker" id="starPicker" role="radiogroup" aria-label="Star rating">
+              <input type="radio" name="rating" id="star5" value="5" /><label for="star5" title="5 stars">★</label>
+              <input type="radio" name="rating" id="star4" value="4" /><label for="star4" title="4 stars">★</label>
+              <input type="radio" name="rating" id="star3" value="3" /><label for="star3" title="3 stars">★</label>
+              <input type="radio" name="rating" id="star2" value="2" /><label for="star2" title="2 stars">★</label>
+              <input type="radio" name="rating" id="star1" value="1" /><label for="star1" title="1 star">★</label>
+            </div>
+          </label>
+          <label>
+            Your review
+            <textarea name="reviewText" id="reviewTextInput" placeholder="Tell us what you think about XMenu…" required maxlength="500"></textarea>
+          </label>
+          <label>
+            Device / Context <span class="form-label-optional">(optional)</span>
+            <input type="text" name="device" id="reviewDeviceInput" placeholder="e.g. iPhone 15 Pro, iPad Air" maxlength="80" />
+          </label>
+          <div class="review-form-actions">
+            <button class="button primary" type="submit" id="reviewSubmitBtn">Submit Review</button>
+            <span class="review-form-feedback" id="reviewFeedback"></span>
+          </div>
+        </form>
+      </section>
+
+      <div class="reviews-header">
+        <span data-i18n="reviews.title">Reviews</span>
+        <button class="button secondary" id="writeReviewBtn" type="button" aria-label="Write a review">✍️ Write a Review</button>
+      </div>
+
+      <section class="reviews" id="reviewsList" aria-label="Kundenbewertungen">
         <div class="review-card">
           <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
           <p class="review-text">"Der Service verlief schnell und ohne viele Komplikationen"</p>
@@ -1684,7 +1892,7 @@
           <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
           <p class="review-text">"Incredibly useful shortcut hub – saves me minutes every single day. Highly recommended!"</p>
           <div class="review-meta">
-            <strong>James</strong> &mdash; iPhone 15 Pro &mdash; 5/5
+            <strong>Jan</strong> &mdash; iPhone 15 Pro &mdash; 5/5
           </div>
         </div>
       </section>
@@ -1839,6 +2047,9 @@
               item3: "Asset loading animation with skip option"
             }
           },
+          reviews: {
+            title: "Reviews"
+          },
           assets: [
             "Styles",
             "Fonts",
@@ -1939,6 +2150,9 @@
               item2: "Supabase-Authentifizierung und Kontoverwaltung",
               item3: "Asset-Ladeanimation mit Überspringen-Option"
             }
+          },
+          reviews: {
+            title: "Bewertungen"
           },
           assets: [
             "Styles",
@@ -2552,6 +2766,124 @@
 
       start();
       renderMembership();
+
+      // ── Write-a-Review panel ───────────────────────────────────────────────
+      (function () {
+        const FORM_COLLAPSE_DELAY_MS = 1800; // ms to show success message before collapsing form
+
+        const writeReviewBtn  = document.getElementById("writeReviewBtn");
+        const reviewFormPanel = document.getElementById("reviewFormPanel");
+        const reviewForm      = document.getElementById("reviewForm");
+        const reviewFeedback  = document.getElementById("reviewFeedback");
+        const reviewsList     = document.getElementById("reviewsList");
+
+        // Toggle panel open/closed
+        function toggleReviewPanel(open) {
+          const isOpen = reviewFormPanel.classList.contains("review-form-panel--open");
+          const shouldOpen = (open !== undefined) ? open : !isOpen;
+          reviewFormPanel.classList.toggle("review-form-panel--open", shouldOpen);
+          if (shouldOpen) {
+            // Allow the CSS open-transition to begin before scrolling, so the
+            // browser can compute the final element height for the smooth scroll.
+            setTimeout(() => reviewFormPanel.scrollIntoView({ behavior: "smooth", block: "start" }), 10);
+          }
+        }
+
+        writeReviewBtn.addEventListener("click", () => toggleReviewPanel());
+
+        // Expose API for the Supabase module script
+        window.xmenuReviews = {
+          /** Called once auth is resolved. Shows button for logged-in users. */
+          setUser(user, displayName) {
+            if (user) {
+              writeReviewBtn.style.display = "";
+              window.xmenuReviews._user        = user;
+              window.xmenuReviews._displayName = displayName;
+            } else {
+              writeReviewBtn.style.display = "none";
+              reviewFormPanel.classList.remove("review-form-panel--open");
+              window.xmenuReviews._user        = null;
+              window.xmenuReviews._displayName = null;
+            }
+          },
+          _user: null,
+          _displayName: null,
+          /** Append a single user-submitted review card to the reviews list. */
+          appendReviewCard(review) {
+            const clampedRating = Math.max(1, Math.min(5, review.rating || 5));
+            const stars  = "★".repeat(clampedRating);
+            const blanks = "★".repeat(5 - clampedRating);
+            const card = document.createElement("div");
+            card.className = "review-card";
+            card.innerHTML =
+              '<div class="review-stars">' +
+                '<span style="color:#facc15">' + stars + '</span>' +
+                '<span style="color:#334155">' + blanks + '</span>' +
+              '</div>' +
+              '<p class="review-text">\u201c' + escapeHtml(review.text) + '\u201d</p>' +
+              '<div class="review-meta">' +
+                '<strong>' + escapeHtml(review.display_name || "Anonymous") + '</strong>' +
+                (review.device ? ' &mdash; ' + escapeHtml(review.device) : "") +
+                ' &mdash; ' + (review.rating || 5) + '/5' +
+              '</div>';
+            reviewsList.appendChild(card);
+          }
+        };
+
+        // Handle form submission (delegates actual Supabase call to module script)
+        reviewForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const submitBtn  = document.getElementById("reviewSubmitBtn");
+          reviewFeedback.textContent = "";
+          reviewFeedback.className   = "review-form-feedback";
+
+          const ratingInput = reviewForm.querySelector('input[name="rating"]:checked');
+          if (!ratingInput) {
+            reviewFeedback.textContent = "Please select a star rating.";
+            reviewFeedback.className   = "review-form-feedback error";
+            return;
+          }
+
+          const rating     = parseInt(ratingInput.value, 10);
+          const text       = (document.getElementById("reviewTextInput").value || "").trim();
+          const device     = (document.getElementById("reviewDeviceInput").value || "").trim();
+
+          if (!text) {
+            reviewFeedback.textContent = "Please write something in your review.";
+            reviewFeedback.className   = "review-form-feedback error";
+            return;
+          }
+
+          submitBtn.disabled = true;
+
+          // The actual save is handled by the module script; call its handler
+          if (typeof window.xmenuReviews._submitHandler === "function") {
+            const ok = await window.xmenuReviews._submitHandler({ rating, text, device });
+            if (ok) {
+              reviewFeedback.textContent = "✓ Review submitted – thank you!";
+              reviewFeedback.className   = "review-form-feedback success";
+              reviewForm.reset();
+              // Collapse form after short delay
+              setTimeout(() => toggleReviewPanel(false), FORM_COLLAPSE_DELAY_MS);
+            } else {
+              reviewFeedback.textContent = "✗ Could not save your review. Please try again.";
+              reviewFeedback.className   = "review-form-feedback error";
+            }
+          } else {
+            reviewFeedback.textContent = "✗ Not ready yet, please try again in a moment.";
+            reviewFeedback.className   = "review-form-feedback error";
+          }
+          submitBtn.disabled = false;
+        });
+
+        function escapeHtml(str) {
+          return String(str)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;");
+        }
+      })();
     </script>
 
     <div class="yt-modal-overlay" id="ytModal" role="dialog" aria-modal="true" aria-label="YouTube Ad Free">
@@ -2937,6 +3269,48 @@
         await supabase.from("profiles").insert({ user_id: userId, display_name: "" });
       }
 
+      // ── Reviews ─────────────────────────────────────────────────────────────
+
+      /** Load user-submitted reviews from Supabase and render them. */
+      async function loadReviews() {
+        const { data, error } = await supabase
+          .from("reviews")
+          .select("id, display_name, rating, text, device, created_at")
+          .order("created_at", { ascending: false })
+          .limit(50);
+
+        if (error || !Array.isArray(data)) return; // table may not exist yet, or query failed – silently skip
+        if (window.xmenuReviews) {
+          data.forEach(r => window.xmenuReviews.appendReviewCard(r));
+        }
+      }
+
+      /**
+       * Submit a new review to Supabase.
+       * Returns true on success, false on failure.
+       */
+      async function submitReview({ rating, text, device }) {
+        const rev = window.xmenuReviews;
+        if (!rev || !rev._user) return false;
+
+        const row = {
+          user_id:      rev._user.id,
+          display_name: rev._displayName || rev._user.email || "Anonymous",
+          rating:       rating,
+          text:         text,
+          device:       device || null
+        };
+
+        const { data, error } = await supabase.from("reviews").insert(row).select().single();
+        if (error) return false;
+
+        // Render the newly created card immediately
+        if (data) window.xmenuReviews.appendReviewCard(data);
+        return true;
+      }
+
+      // ── Account / auth ───────────────────────────────────────────────────────
+
       async function renderAccount() {
         const { data } = await supabase.auth.getUser();
         const user = data.user;
@@ -2956,8 +3330,9 @@
           accountBtn.href =
             "https://accounts.xmenu.dev/?returnTo=" +
             encodeURIComponent("https://xmenu.dev/");
-          // Guest mode – refresh membership with guest key
+          // Guest mode – refresh membership with guest key and hide review button
           if (window.xmenuMembership) window.xmenuMembership.setUserId(null);
+          if (window.xmenuReviews)    window.xmenuReviews.setUser(null, null);
           return;
         }
 
@@ -2981,6 +3356,12 @@
         accountBtn.href =
           "https://accounts.xmenu.dev/?returnTo=" +
           encodeURIComponent("https://xmenu.dev/");
+
+        // Show review button and wire submit handler for this logged-in user
+        if (window.xmenuReviews) {
+          window.xmenuReviews.setUser(user, name);
+          window.xmenuReviews._submitHandler = submitReview;
+        }
       }
 
       supabase.auth.onAuthStateChange(() => {
@@ -2988,6 +3369,7 @@
       });
 
       renderAccount();
+      loadReviews();
     </script>
 
   </body>
