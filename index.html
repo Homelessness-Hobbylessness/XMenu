@@ -1546,8 +1546,22 @@
         color: #475569;
         text-align: center;
       }
+
+      .captcha-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .captcha-error {
+        font-size: 0.85rem;
+        color: #f87171;
+        min-height: 18px;
+        display: block;
+      }
     </style>
     <script src="codes.js"></script>
+    <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
   </head>
   <body>
     <div class="language-switcher">
@@ -1777,6 +1791,11 @@
             </div>
             <span class="code-feedback" id="codeFeedback"></span>
           </label>
+          <div class="captcha-wrapper">
+            <!-- Replace data-sitekey with your production hCaptcha site key before deploying -->
+            <div class="h-captcha" data-sitekey="10000000-ffff-ffff-ffff-000000000001"></div>
+            <span class="captcha-error" id="captchaError"></span>
+          </div>
           <div class="support-actions">
             <button class="button primary" type="submit">
               <span data-i18n="support.submit">Request Support</span>
@@ -2015,7 +2034,8 @@
             codeUnlocked: "✓ Customization panel unlocked!",
             pricePhone: "📞 Estimated cost: from 2.50 € (phone support)",
             priceStorage: "💾 Estimated cost: from 40 € (storage repair)",
-            priceOther: "🔧 Estimated cost: 2 € – 100 € (general repair)"
+            priceOther: "🔧 Estimated cost: 2 € – 100 € (general repair)",
+            captchaRequired: "Please complete the captcha before submitting."
           },
           footer: {
             comingSoon: "Coming Soon",
@@ -2119,7 +2139,8 @@
             codeUnlocked: "✓ Anpassungsbereich freigeschaltet!",
             pricePhone: "📞 Geschätzte Kosten: ab 2,50 € (Telefon-Support)",
             priceStorage: "💾 Geschätzte Kosten: ab 40 € (Speicher-Reparatur)",
-            priceOther: "🔧 Geschätzte Kosten: 2 € – 100 € (allgemeine Reparatur)"
+            priceOther: "🔧 Geschätzte Kosten: 2 € – 100 € (allgemeine Reparatur)",
+            captchaRequired: "Bitte das Captcha vor dem Absenden ausfüllen."
           },
           footer: {
             comingSoon: "Demnächst verfügbar",
@@ -2739,6 +2760,15 @@
 
       supportForm.addEventListener("submit", (event) => {
         event.preventDefault();
+
+        const captchaResponse = typeof hcaptcha !== "undefined" ? hcaptcha.getResponse() : "";
+        const captchaError = document.getElementById("captchaError");
+        if (!captchaResponse) {
+          const tData = translations[currentLang];
+          captchaError.textContent = tData.support.captchaRequired;
+          return;
+        }
+        captchaError.textContent = "";
 
         const formData = new FormData(supportForm);
 
