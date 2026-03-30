@@ -46,3 +46,4 @@ Questions or ideas? Reach out: **support@xmenu.dev**
 
 ## 📄 License
 We use the MIT License, so feel free to make tweaks and contribute!
+# YOLO
