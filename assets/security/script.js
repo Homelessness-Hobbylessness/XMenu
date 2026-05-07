@@ -22,7 +22,7 @@
   const REDIRECT_URL = getRedirectURL() || "https://xmenu.dev/";
   const VERIFICATION_KEY = "xmenu_verified";
   const VERIFICATION_EXPIRY_KEY = "xmenu_verification_expiry";
-  const VERIFICATION_TTL_MS = 24 * 60 * 60 * 1000;
+  const VERIFICATION_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
   (function redirectIfAlreadyVerified() {
     try {

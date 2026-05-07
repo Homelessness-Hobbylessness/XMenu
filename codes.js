@@ -39,7 +39,7 @@ window.XMENU_CODE_CONFIG = (function () {
   //   xpRequired   – minimum XP to reach this tier
   //   color        – badge accent colour (CSS colour string)
   //   icon         – emoji / symbol shown in the badge
-  //   discountCode – the code that members of this tier receive (null for none)
+  //   discountCode – the code that members of this tier receive (null means no discount code)
   //   discountPct  – the discount percentage the code provides
   //   perkText     – optional non-discount perk description
   const MEMBERSHIP_TIERS = [

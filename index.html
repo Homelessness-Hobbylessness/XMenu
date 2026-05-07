@@ -2558,7 +2558,10 @@
       }
 
       function getTierForXP(xp) {
-        let current = MEMBERSHIP_TIERS[0] || { id: "none", label: "No Membership", xpRequired: 0, color: "#64748b", icon: "—", discountCode: null, discountPct: 0, perkText: "Starter perks unlocked" };
+        if (!MEMBERSHIP_TIERS.length) {
+          return { id: "none", label: "No Membership", xpRequired: 0, color: "#64748b", icon: "—", discountCode: null, discountPct: 0, perkText: "Starter perks unlocked" };
+        }
+        let current = MEMBERSHIP_TIERS[0];
         for (const tier of MEMBERSHIP_TIERS) {
           if (xp >= tier.xpRequired) current = tier;
         }
