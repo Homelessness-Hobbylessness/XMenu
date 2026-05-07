@@ -1583,6 +1583,9 @@
       .hcaptcha-overlay-badge a:hover {
         color: #cbd5e1;
       }
+      .is-hidden {
+        display: none !important;
+      }
     </style>
     <script src="codes.js"></script>
     <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
@@ -1922,7 +1925,7 @@
 
       <div class="reviews-header">
         <span data-i18n="reviews.title">Reviews</span>
-        <button class="button secondary" id="writeReviewBtn" type="button" aria-label="Write a review" style="display:none;">✍️ Write a Review</button>
+        <button class="button secondary is-hidden" id="writeReviewBtn" type="button" aria-label="Write a review">✍️ Write a Review</button>
       </div>
 
       <section class="reviews" id="reviewsList" aria-label="Kundenbewertungen">
@@ -2574,6 +2577,13 @@
         return MEMBERSHIP_TIERS[idx + 1];
       }
 
+      function getTierPerkText(tier) {
+        if (!tier) return "";
+        if (tier.discountCode) return tier.discountPct + "% discount code";
+        if (tier.perkText) return tier.perkText;
+        return "";
+      }
+
       // ── XP toast notification ─────────────────────────────────────────────
       let xpToastTimer = null;
       function showXpToast(msg) {
@@ -2619,10 +2629,11 @@
         // Perk / discount code
         const perkBox  = document.getElementById("memberPerkBox");
         const perkCode = document.getElementById("memberPerkCode");
+        const perkText = getTierPerkText(tier);
         if (perkBox) {
-          if (tier.discountCode || tier.perkText) {
+          if (perkText) {
             perkBox.style.display = "";
-            if (perkCode) perkCode.textContent = tier.discountCode || tier.perkText;
+            if (perkCode) perkCode.textContent = tier.discountCode || perkText;
           } else {
             perkBox.style.display = "none";
           }
@@ -2651,13 +2662,7 @@
 
             const perkEl = document.createElement("div");
             perkEl.className = "tier-card-perk";
-            if (t.discountCode) {
-              perkEl.textContent = t.discountPct + "% discount code";
-            } else if (t.perkText) {
-              perkEl.textContent = t.perkText;
-            } else {
-              perkEl.textContent = "No perk";
-            }
+            perkEl.textContent = getTierPerkText(t) || "No perk";
 
             card.appendChild(iconEl2);
             card.appendChild(nameEl2);

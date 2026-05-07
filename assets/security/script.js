@@ -19,7 +19,8 @@
     }
   }
 
-  const REDIRECT_URL = getRedirectURL() || "https://xmenu.dev/";
+  const DEFAULT_REDIRECT_URL = "https://xmenu.dev/";
+  const REDIRECT_URL = getRedirectURL() || DEFAULT_REDIRECT_URL;
   const VERIFICATION_KEY = "xmenu_verified";
   const VERIFICATION_EXPIRY_KEY = "xmenu_verification_expiry";
   const VERIFICATION_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
