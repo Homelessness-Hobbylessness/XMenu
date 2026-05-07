@@ -2562,7 +2562,7 @@
 
       function getTierForXP(xp) {
         if (!MEMBERSHIP_TIERS.length) {
-          return { id: "none", label: "No Membership", xpRequired: 0, color: "#64748b", icon: "—", discountCode: null, discountPct: 0, perkText: "Starter perks unlocked" };
+          return { id: "none", label: "No Membership", xpRequired: 0, color: "#64748b", icon: "—", discountCode: null, discountPct: 0, perkText: "Starter access to all core tools" };
         }
         let current = MEMBERSHIP_TIERS[0];
         for (const tier of MEMBERSHIP_TIERS) {
@@ -2627,15 +2627,18 @@
         }
 
         // Perk / discount code
-        const perkBox  = document.getElementById("memberPerkBox");
-        const perkCode = document.getElementById("memberPerkCode");
-        const perkText = getTierPerkText(tier);
+        const perkBox     = document.getElementById("memberPerkBox");
+        const perkCode    = document.getElementById("memberPerkCode");
+        const copyCodeBtn = document.getElementById("copyMemberCodeBtn");
+        const perkText    = tier.discountCode || tier.perkText || "";
         if (perkBox) {
           if (perkText) {
             perkBox.style.display = "";
-            if (perkCode) perkCode.textContent = tier.discountCode || perkText;
+            if (perkCode) perkCode.textContent = perkText;
+            if (copyCodeBtn) copyCodeBtn.style.display = tier.discountCode ? "" : "none";
           } else {
             perkBox.style.display = "none";
+            if (copyCodeBtn) copyCodeBtn.style.display = "none";
           }
         }
 
