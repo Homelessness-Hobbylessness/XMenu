@@ -19,7 +19,23 @@
     }
   }
 
-  const REDIRECT_URL = getRedirectURL();
+  const DEFAULT_REDIRECT_URL = "https://xmenu.dev/";
+  const REDIRECT_URL = getRedirectURL() || DEFAULT_REDIRECT_URL;
+  const VERIFICATION_KEY = "xmenu_verified";
+  const VERIFICATION_EXPIRY_KEY = "xmenu_verification_expiry";
+  const VERIFICATION_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
+
+  (function redirectIfAlreadyVerified() {
+    try {
+      const isVerified = sessionStorage.getItem(VERIFICATION_KEY) === "true";
+      const expiry = parseInt(sessionStorage.getItem(VERIFICATION_EXPIRY_KEY) || "0", 10);
+      if (isVerified && Date.now() < expiry && REDIRECT_URL) {
+        window.location.replace(REDIRECT_URL);
+      }
+    } catch {
+      // ignore storage errors and continue with challenge
+    }
+  })();
 
   // ── One simple question ───────────────────────────────────────────────────
   const QUESTIONS = [
@@ -72,6 +88,13 @@
 
   // ── Success / redirect ────────────────────────────────────────────────────
   function showSuccess() {
+    try {
+      sessionStorage.setItem(VERIFICATION_KEY, "true");
+      sessionStorage.setItem(VERIFICATION_EXPIRY_KEY, String(Date.now() + VERIFICATION_TTL_MS));
+    } catch {
+      // ignore storage errors
+    }
+
     challengesEl.style.display = "none";
     successEl.style.display    = "block";
 

@@ -1583,6 +1583,9 @@
       .hcaptcha-overlay-badge a:hover {
         color: #cbd5e1;
       }
+      .is-hidden {
+        display: none !important;
+      }
     </style>
     <script src="codes.js"></script>
     <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
@@ -1650,15 +1653,6 @@
           <button class="button secondary" id="supportToggle" type="button" aria-label="Open tech support">
             <span data-i18n="header.support">Tech Support</span>
           </button>
-
-          <a
-            class="button secondary"
-            id="accountBtn"
-            href="https://accounts.xmenu.dev/?returnTo=https%3A%2F%2Fxmenu.dev%2F"
-            aria-label="Login or register"
-          >
-            Login / Register
-          </a>
 
           <a class="button secondary" id="releasesBtn" href="https://rls.xmenu.dev" aria-label="Releases">
             Releases
@@ -1738,7 +1732,7 @@
           </div>
           <ul>
             <li data-i18n="changelog.v127.item1">EN/DE language switcher with persistent preference</li>
-            <li data-i18n="changelog.v127.item2">Supabase authentication and account management</li>
+            <li data-i18n="changelog.v127.item2">Guest-first access and simplified onboarding</li>
             <li data-i18n="changelog.v127.item3">Asset loading animation with skip option</li>
           </ul>
         </div>
@@ -1879,7 +1873,7 @@
 
           <!-- Membership perk / discount code -->
           <div class="member-perk-box" id="memberPerkBox" style="display:none;">
-            <span class="member-perk-label">Your discount code:</span>
+            <span class="member-perk-label">Your membership perk:</span>
             <span class="member-perk-code" id="memberPerkCode">—</span>
             <button class="copy-code-btn" id="copyMemberCodeBtn" type="button">📋 Copy</button>
           </div>
@@ -1897,7 +1891,7 @@
         </div>
       </section>
 
-      <!-- ── Write a Review panel (shown only to logged-in users) ── -->
+      <!-- ── Write a Review panel ── -->
       <section class="review-form-panel" id="reviewFormPanel" aria-label="Write a Review">
         <div>
           <h2>✍️ Write a Review</h2>
@@ -1931,7 +1925,7 @@
 
       <div class="reviews-header">
         <span data-i18n="reviews.title">Reviews</span>
-        <button class="button secondary" id="writeReviewBtn" type="button" aria-label="Write a review">✍️ Write a Review</button>
+        <button class="button secondary is-hidden" id="writeReviewBtn" type="button" aria-label="Write a review">✍️ Write a Review</button>
       </div>
 
       <section class="reviews" id="reviewsList" aria-label="Kundenbewertungen">
@@ -2017,6 +2011,20 @@
     </div>
 
     <script>
+      const ENTRY_VERIFICATION_KEY = "xmenu_verified";
+      const ENTRY_VERIFICATION_EXPIRY_KEY = "xmenu_verification_expiry";
+      let isEntryVerified = false;
+      try {
+        isEntryVerified =
+          sessionStorage.getItem(ENTRY_VERIFICATION_KEY) === "true" &&
+          Date.now() < parseInt(sessionStorage.getItem(ENTRY_VERIFICATION_EXPIRY_KEY) || "0", 10);
+      } catch {
+        isEntryVerified = false;
+      }
+      if (!isEntryVerified) {
+        window.location.replace("security.html?returnTo=" + encodeURIComponent(window.location.href));
+      }
+
       // Translation data
       const translations = {
         en: {
@@ -2106,7 +2114,7 @@
             v127: {
               date: "December 2025",
               item1: "EN/DE language switcher with persistent preference",
-              item2: "Supabase authentication and account management",
+              item2: "Guest-first access and simplified onboarding",
               item3: "Asset loading animation with skip option"
             }
           },
@@ -2212,7 +2220,7 @@
             v127: {
               date: "Dezember 2025",
               item1: "EN/DE-Sprachumschalter mit gespeicherter Einstellung",
-              item2: "Supabase-Authentifizierung und Kontoverwaltung",
+              item2: "Gastzugang mit vereinfachtem Onboarding",
               item3: "Asset-Ladeanimation mit Überspringen-Option"
             }
           },
@@ -2317,7 +2325,7 @@
             v127: {
               date: "2025年12月",
               item1: "支持持久偏好的 EN/DE 语言切换器",
-              item2: "Supabase 身份验证与账户管理",
+              item2: "访客优先访问与简化的新手引导",
               item3: "带跳过选项的资源加载动画"
             }
           },
@@ -2385,22 +2393,11 @@
       const progressBar = loader.querySelector(".asset-progress");
 
       const supportToggle = document.getElementById("supportToggle");
-      const downloadBtn = document.getElementById("downloadBtn");
       const supportPanel = document.getElementById("supportPanel");
       const supportForm = document.getElementById("supportForm");
       const deviceTypeSelect = document.getElementById("deviceTypeSelect");
       const issueTextarea = document.getElementById("issueTextarea");
       const priceEstimate = document.getElementById("priceEstimate");
-
-      const loginRedirectUrl =
-        "https://accounts.xmenu.dev/?returnTo=" + encodeURIComponent(window.location.href);
-
-      window.xmenuRequireAuth =
-        window.xmenuRequireAuth ||
-        (async () => {
-          window.location.href = loginRedirectUrl;
-          return false;
-        });
 
       let index = 0;
       let done = false;
@@ -2564,7 +2561,10 @@
       }
 
       function getTierForXP(xp) {
-        let current = MEMBERSHIP_TIERS[0] || { id: "none", label: "No Membership", xpRequired: 0, color: "#64748b", icon: "—", discountCode: null, discountPct: 0 };
+        if (!MEMBERSHIP_TIERS.length) {
+          return { id: "none", label: "No Membership", xpRequired: 0, color: "#64748b", icon: "—", discountCode: null, discountPct: 0, perkText: "Starter access to all core tools" };
+        }
+        let current = MEMBERSHIP_TIERS[0];
         for (const tier of MEMBERSHIP_TIERS) {
           if (xp >= tier.xpRequired) current = tier;
         }
@@ -2575,6 +2575,13 @@
         const idx = MEMBERSHIP_TIERS.findIndex(t => t.id === currentTierId);
         if (idx === -1 || idx === MEMBERSHIP_TIERS.length - 1) return null;
         return MEMBERSHIP_TIERS[idx + 1];
+      }
+
+      function getTierPerkText(tier) {
+        if (!tier) return "";
+        if (tier.discountCode) return tier.discountPct + "% discount code";
+        if (tier.perkText) return tier.perkText;
+        return "";
       }
 
       // ── XP toast notification ─────────────────────────────────────────────
@@ -2620,14 +2627,18 @@
         }
 
         // Perk / discount code
-        const perkBox  = document.getElementById("memberPerkBox");
-        const perkCode = document.getElementById("memberPerkCode");
+        const perkBox     = document.getElementById("memberPerkBox");
+        const perkCode    = document.getElementById("memberPerkCode");
+        const copyCodeBtn = document.getElementById("copyMemberCodeBtn");
+        const perkText    = tier.discountCode || tier.perkText || "";
         if (perkBox) {
-          if (tier.discountCode) {
+          if (perkText) {
             perkBox.style.display = "";
-            if (perkCode) perkCode.textContent = tier.discountCode;
+            if (perkCode) perkCode.textContent = perkText;
+            if (copyCodeBtn) copyCodeBtn.style.display = tier.discountCode ? "" : "none";
           } else {
             perkBox.style.display = "none";
+            if (copyCodeBtn) copyCodeBtn.style.display = "none";
           }
         }
 
@@ -2654,7 +2665,7 @@
 
             const perkEl = document.createElement("div");
             perkEl.className = "tier-card-perk";
-            perkEl.textContent = t.discountCode ? t.discountPct + "% discount code" : "No perk";
+            perkEl.textContent = getTierPerkText(t) || "No perk";
 
             card.appendChild(iconEl2);
             card.appendChild(nameEl2);
@@ -2894,17 +2905,8 @@
       const savedTheme = localStorage.getItem("xmenu-theme");
       if (savedTheme) applyTheme(savedTheme);
 
-      supportToggle.addEventListener("click", async () => {
-        const canAccess = await window.xmenuRequireAuth();
-        if (!canAccess) return;
+      supportToggle.addEventListener("click", () => {
         toggleSupportPanel();
-      });
-
-      downloadBtn.addEventListener("click", async (event) => {
-        event.preventDefault();
-        const canAccess = await window.xmenuRequireAuth();
-        if (!canAccess) return;
-        window.location.href = downloadBtn.href;
       });
 
       async function doSupportSubmit(token) {
@@ -3465,23 +3467,7 @@
 
       const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-      const label = document.getElementById("signedInLabel");
-      const accountBtn = document.getElementById("accountBtn");
-
-      async function ensureProfileRow(userId) {
-        const { data } = await supabase
-          .from("profiles")
-          .select("user_id")
-          .eq("user_id", userId)
-          .maybeSingle();
-
-        if (data) return;
-        await supabase.from("profiles").insert({ user_id: userId, display_name: "" });
-      }
-
-      // ── Reviews ─────────────────────────────────────────────────────────────
-
-      /** Load user-submitted reviews from Supabase and render them. */
+      /** Load public reviews from Supabase and render them. */
       async function loadReviews() {
         const { data, error } = await supabase
           .from("reviews")
@@ -3489,96 +3475,12 @@
           .order("created_at", { ascending: false })
           .limit(50);
 
-        if (error || !Array.isArray(data)) return; // table may not exist yet, or query failed – silently skip
-        if (window.xmenuReviews) {
-          data.forEach(r => window.xmenuReviews.appendReviewCard(r));
-        }
+        if (error || !Array.isArray(data)) return;
+        if (window.xmenuReviews) data.forEach(r => window.xmenuReviews.appendReviewCard(r));
       }
 
-      /**
-       * Submit a new review to Supabase.
-       * Returns true on success, false on failure.
-       */
-      async function submitReview({ rating, text, device }) {
-        const rev = window.xmenuReviews;
-        if (!rev || !rev._user) return false;
-
-        const row = {
-          user_id:      rev._user.id,
-          display_name: rev._displayName || rev._user.email || "Anonymous",
-          rating:       rating,
-          text:         text,
-          device:       device || null
-        };
-
-        const { data, error } = await supabase.from("reviews").insert(row).select().single();
-        if (error) return false;
-
-        // Render the newly created card immediately
-        if (data) window.xmenuReviews.appendReviewCard(data);
-        return true;
-      }
-
-      // ── Account / auth ───────────────────────────────────────────────────────
-
-      async function renderAccount() {
-        const { data } = await supabase.auth.getUser();
-        const user = data.user;
-
-        window.xmenuRequireAuth = async () => {
-          const { data: authData } = await supabase.auth.getUser();
-          if (authData.user) return true;
-          window.location.href =
-            "https://accounts.xmenu.dev/?returnTo=" +
-            encodeURIComponent(window.location.href);
-          return false;
-        };
-
-        if (!user) {
-          label.style.display = "none";
-          accountBtn.textContent = "Login / Register";
-          accountBtn.href =
-            "https://accounts.xmenu.dev/?returnTo=" +
-            encodeURIComponent("https://xmenu.dev/");
-          // Guest mode – refresh membership with guest key and hide review button
-          if (window.xmenuMembership) window.xmenuMembership.setUserId(null);
-          if (window.xmenuReviews)    window.xmenuReviews.setUser(null, null);
-          return;
-        }
-
-        await ensureProfileRow(user.id);
-
-        // Switch XP storage to this user's key and refresh membership display
-        if (window.xmenuMembership) window.xmenuMembership.setUserId(user.id);
-
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("display_name")
-          .eq("user_id", user.id)
-          .maybeSingle();
-
-        const name = (profile?.display_name || "").trim() || user.email || "User";
-
-        label.textContent = "Signed in as: " + name;
-        label.style.display = "block";
-
-        accountBtn.textContent = "Account Settings";
-        accountBtn.href =
-          "https://accounts.xmenu.dev/?returnTo=" +
-          encodeURIComponent("https://xmenu.dev/");
-
-        // Show review button and wire submit handler for this logged-in user
-        if (window.xmenuReviews) {
-          window.xmenuReviews.setUser(user, name);
-          window.xmenuReviews._submitHandler = submitReview;
-        }
-      }
-
-      supabase.auth.onAuthStateChange(() => {
-        renderAccount();
-      });
-
-      renderAccount();
+      if (window.xmenuMembership) window.xmenuMembership.setUserId(null);
+      if (window.xmenuReviews) window.xmenuReviews.setUser(null, null);
       loadReviews();
     </script>
 
