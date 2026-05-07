@@ -39,14 +39,15 @@ window.XMENU_CODE_CONFIG = (function () {
   //   xpRequired   – minimum XP to reach this tier
   //   color        – badge accent colour (CSS colour string)
   //   icon         – emoji / symbol shown in the badge
-  //   discountCode – the code that members of this tier receive (null for "none")
+  //   discountCode – the code that members of this tier receive (null for none)
   //   discountPct  – the discount percentage the code provides
+  //   perkText     – optional non-discount perk description
   const MEMBERSHIP_TIERS = [
-    { id: "none",     label: "No Membership", xpRequired: 0,    color: "#64748b", icon: "—",  discountCode: null,       discountPct: 0  },
-    { id: "bronze",   label: "Bronze",        xpRequired: 100,  color: "#cd7f32", icon: "🥉", discountCode: "BRONZE5",  discountPct: 5  },
-    { id: "silver",   label: "Silver",        xpRequired: 200,  color: "#c0c0c0", icon: "🥈", discountCode: "SILVER10", discountPct: 10 },
-    { id: "gold",     label: "Gold",          xpRequired: 1000, color: "#ffd700", icon: "🥇", discountCode: "GOLD15",   discountPct: 15 },
-    { id: "platinum", label: "Platinum",      xpRequired: 5000, color: "#e5e4e2", icon: "💎", discountCode: "PLAT20",   discountPct: 20 }
+    { id: "none",     label: "No Membership", xpRequired: 0,    color: "#64748b", icon: "—",  discountCode: null,       discountPct: 0,  perkText: "Starter access to all core tools" },
+    { id: "bronze",   label: "Bronze",        xpRequired: 100,  color: "#cd7f32", icon: "🥉", discountCode: "BRONZE5",  discountPct: 5,  perkText: "First member discount unlocked" },
+    { id: "silver",   label: "Silver",        xpRequired: 200,  color: "#c0c0c0", icon: "🥈", discountCode: "SILVER10", discountPct: 10, perkText: "Bigger savings for regular users" },
+    { id: "gold",     label: "Gold",          xpRequired: 1000, color: "#ffd700", icon: "🥇", discountCode: "GOLD15",   discountPct: 15, perkText: "Advanced member savings unlocked" },
+    { id: "platinum", label: "Platinum",      xpRequired: 5000, color: "#e5e4e2", icon: "💎", discountCode: "PLAT20",   discountPct: 20, perkText: "Maximum member savings tier" }
   ];
 
   return {
